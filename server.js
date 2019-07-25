@@ -35,20 +35,6 @@ var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines
 
 mongoose.connect(MONGODB_URI);
 
-// Routes
-
-app.get("/", function (req,res) {
-    Article.find({"saved": false})
-    .limit(20)
-    .then(function (error,data) {
-		var hbsObject = {
-			article: data
-		};
-		console.log(hbsObject);
-		res.render("home", hbsObject);
-	});
-});
-
 
 // A GET route for scraping the echoJS website
 app.get("/scrape", function (req, res) {
@@ -79,6 +65,19 @@ app.get("/scrape", function (req, res) {
     });
 });
 
+// Route for getting all Articles from the db
+app.get("/articles", function (req, res) {
+    // TODO: Finish the route so it grabs all of the articles
+    db.Article.find({saved: false})
+        .limit(6)
+        .then(function (articles) {
+            res.json(articles);
+        })
+        .catch(function (err) {
+            res.json(err);
+        })
+});
+
 app.get("/saved", function (req, res) {
     db.Article.find({ saved : true })
     .populate("note")
@@ -89,18 +88,6 @@ app.get("/saved", function (req, res) {
         res.json(err);
     })
 })
-// Route for getting all Articles from the db
-app.get("/articles", function (req, res) {
-    // TODO: Finish the route so it grabs all of the articles
-    db.Article.find({saved: false})
-        .limit(20)
-        .then(function (articles) {
-            res.json(articles);
-        })
-        .catch(function (err) {
-            res.json(err);
-        })
-});
 
 
 // Route for grabbing a specific Article by id, populate it with it's note

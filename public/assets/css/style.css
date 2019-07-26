@@ -3,14 +3,18 @@
 }
 
 .jumbotron {
-    background-color: dimgray;
+    background-color: darkslategray;
     height: 300px;
     color: whitesmoke
 }
 
 #navbar {
     height: 150px;
-    background-color: gray;
+    background-color: #212529;
+}
+
+#articles {
+    background-color: dimgray;
 }
 
 .btn {
@@ -31,4 +35,10 @@ h1 {
 
 .navbar-brand {
     font-size: 30px;
+}
+
+#save-btn, 
+#note-btn,
+#deletearticle {
+    color: gray;
 }

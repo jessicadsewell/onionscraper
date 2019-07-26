@@ -4,13 +4,11 @@ function getSaved() {
         if (data.length > 0) {
 
             for (var i = 0; i < data.length; i++) {
-                // Display the apropos information on the page
-                // Display the information on the page
                 var space = $("<br>")
                 var card = $("<div>").addClass("card text-white bg-dark");
-                var viewBtn = $("<button>").addClass("btn btn-secondary btn-sm view").text("View Notes").attr("data-id", data[i]._id);
+                var viewBtn = $("<button>").addClass("btn btn-secondary btn-sm view").text("View Notes").attr("data-id", data[i]._id).attr("id", "view-btn");
                 var deleteButton = $("<button>").addClass("btn btn-secondary btn-sm").text("Delete Article").attr("data-id", data[i]._id).attr("id", "deletearticle");
-                var noteButton = $("<button>").addClass("btn btn-secondary btn-sm").text("Article Notes").attr("data-id", data[i]._id).attr("id", "note-btn");
+                var noteButton = $("<button>").addClass("btn btn-secondary btn-sm").text("Create Article Note").attr("data-id", data[i]._id).attr("id", "note-btn");
                 var cardHead = $("<div>").addClass("card-header");
                 var cardBody = $("<div>").addClass("card-body");
                 var title = $("<h4>").addClass("card-title").text(data[i].title);
@@ -23,6 +21,7 @@ function getSaved() {
                 $(card).prepend(cardBody);
                 $(cardHead).prepend(deleteButton);
                 $(cardHead).prepend(noteButton);
+                $(cardHead).prepend(viewBtn);
                 $(card).prepend(cardHead);
                 $("#articles").append(card);
                 $("#articles").append(space);
@@ -47,7 +46,7 @@ function getSaved() {
 
             });
 
-            $("#save-comment").on("click", function () {
+            $("#save-note").on("click", function () {
                 $.ajax({
                     method: "POST",
                     url: "/article/" + $(this).attr("data-id"),
@@ -68,26 +67,46 @@ function getSaved() {
             });
 
             // associate these with the articles using the data-id somehow
-            $(".view").on("click", function () {
+            $("#view-btn").on("click", function () {
+                $("#append-notes-here").empty();
 
                 $("#view-notes").modal("toggle");
 
-                $.getJSON("/articles/" + $(this).attr("data-id"), function (data) {
+                var ID = $(this).attr("data-id");
+
+                $.getJSON("/article/" + ID, function (data) {
+                    console.log("data : " + data)
 
                     if (!data.note.length == []) {
 
                         for (var i = 0; i < data.note.length; i++) {
-
+                            var noteDiv = $("<div>").attr("id", data.note[i]._id);
+                            var removeBtn = $("<button>").addClass("btn btn-danger btn-sm remove-note").attr("data-id", data.note[i]._id).text("X");
                             var title = $("<h4>").text(`Title: ${data.note[i].title}`);
                             var body = $("<p>").text(`Note: ${data.note[i].body}`);
                             var linebreak = $("<br>");
                             var divider = $("<hr>");
 
-                            $("#append-notes-here").append(title);
-                            $("#append-notes-here").append(body);
-                            $("#append-notes-here").append(divider);
-                            $("#append-notes-here").append(linebreak);
+                            $("#append-notes-here").append(noteDiv);
+                            $(noteDiv).append(title);
+                            $(title).append(removeBtn);
+                            $(noteDiv).append(body);
+                            $(noteDiv).append(divider);
+                            $(noteDiv).append(linebreak);
                         }
+                        $(".remove-note").on("click", function() {
+                        
+                            $.ajax({
+                                method: "DELETE",
+                                url: "/delete/" + $(this).attr("data-id")
+                            })
+                            .then(function(data) {
+                                console.log("Deleted note");
+                            })
+
+                            $(`[id=${$(this).attr('data-id')}]`).remove();
+                            
+                        });
 
                     } else {
 

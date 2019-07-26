@@ -11,7 +11,7 @@ var cheerio = require("cheerio");
 // Require all models
 var db = require("./models");
 
-var PORT = 8080;
+var PORT = process.env.PORT || 8080;
 
 // Initialize Express
 var app = express();
@@ -70,7 +70,7 @@ app.get("/scrape", function (req, res) {
 app.get("/articles", function (req, res) {
     // TODO: Finish the route so it grabs all of the articles
     db.Article.find({saved: false})
-        .limit(6)
+        .limit(10)
         .then(function (articles) {
             res.json(articles);
         })
@@ -127,13 +127,13 @@ app.get("/article/:id", function (req, res) {
         })
         .catch(function (err) {
             res.json(err)
-        })
+        });
     // Finish the route so it finds one article using the req.params.id,
     // and run the populate method with "note",
     // then responds with the article with the note included
 });
 
-// Route for saving an Article's associated Comment
+// Route for saving an Article's associated note
 app.post("/article/:id", function(req, res) {
     db.Note.create(req.body)
     .then(function(dbNote) {
@@ -147,8 +147,16 @@ app.post("/article/:id", function(req, res) {
     });
 });
 
+// Route for deleting one comment associated with an article
+app.delete("/delete/:id", function(req, res) {
+    db.Note.findOneAndDelete({ _id: req.params.id })
+    .then(function(err){
+        res.send(err)
+    });
+});
+
 // Start the server
-app.listen(process.env.PORT, function () {
+app.listen(PORT, function() {
     console.log("App running on port " + PORT + "!");
 });
 

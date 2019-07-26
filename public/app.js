@@ -10,11 +10,10 @@ function getArticles() {
         // Display the information on the page
         var space = $("<br>")
         var card = $("<div>").addClass("card text-white bg-dark");
-        var saveButton = $("<button>").addClass("btn btn-secondary btn-sm").text("Save Article").attr("data-id", data[i]._id).attr("id", "save-btn");
-
-        if (data[i].saved === true) {
-          $(saveButton).text("Saved")
-        }
+        var saveButton = $("<button>").addClass("btn btn-secondary btn-sm save-btn").text("Save Article").attr("data-id", data[i]._id);
+        // if (data[i].saved === true) {
+        //   $(saveButton).text("Saved")
+        // }
         var cardHead = $("<div>").addClass("card-header");
         var cardBody = $("<div>").addClass("card-body");
         var title = $("<h4>").addClass("card-title").text(data[i].title);
@@ -30,7 +29,7 @@ function getArticles() {
         $("#articles").append(card);
         $("#articles").append(space);
       }
-      $("#save-btn").on("click", function () {
+      $(".save-btn").on("click", function () {
         $.ajax({
           method: "PUT",
           url: "/save/" + $(this).attr("data-id")

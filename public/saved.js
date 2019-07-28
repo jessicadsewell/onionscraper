@@ -6,9 +6,9 @@ function getSaved() {
             for (var i = 0; i < data.length; i++) {
                 var space = $("<br>")
                 var card = $("<div>").addClass("card text-white bg-dark");
-                var viewBtn = $("<button>").addClass("btn btn-secondary btn-sm view").text("View Notes").attr("data-id", data[i]._id).attr("id", "view-btn");
-                var deleteButton = $("<button>").addClass("btn btn-secondary btn-sm").text("Delete Article").attr("data-id", data[i]._id).attr("id", "deletearticle");
-                var noteButton = $("<button>").addClass("btn btn-secondary btn-sm").text("Create Article Note").attr("data-id", data[i]._id).attr("id", "note-btn");
+                var viewBtn = $("<button>").addClass("btn btn-secondary btn-sm view").text("View Notes").attr("data-id", data[i]._id);
+                var deleteButton = $("<button>").addClass("btn btn-secondary btn-sm delete").text("Delete Article").attr("data-id", data[i]._id);
+                var noteButton = $("<button>").addClass("btn btn-secondary btn-sm note").text("Create Article Note").attr("data-id", data[i]._id);
                 var cardHead = $("<div>").addClass("card-header");
                 var cardBody = $("<div>").addClass("card-body");
                 var title = $("<h4>").addClass("card-title").text(data[i].title);
@@ -27,7 +27,7 @@ function getSaved() {
                 $("#articles").append(space);
 
             }
-            $("#deletearticle").on("click", function () {
+            $(".delete").on("click", function () {
                 $.ajax({
                     method: "PUT",
                     url: "/unsave/" + $(this).attr("data-id")
@@ -40,7 +40,7 @@ function getSaved() {
 
             });
 
-            $("#note-btn").on("click", function () {
+            $(".note").on("click", function () {
                 $("#note-modal").modal("toggle");
                 $("#save-note").attr("data-id", $(this).attr("data-id"));
 
@@ -67,7 +67,7 @@ function getSaved() {
             });
 
             // associate these with the articles using the data-id somehow
-            $("#view-btn").on("click", function () {
+            $(".view").on("click", function () {
                 $("#append-notes-here").empty();
 
                 $("#view-notes").modal("toggle");
